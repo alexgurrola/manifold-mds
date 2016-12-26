@@ -7,27 +7,37 @@ from pymanopt import Problem
 from pymanopt.manifolds import Stiefel
 from pymanopt.solvers import SteepestDescent
 
-# (1) Instantiate a manifold
-manifold = Stiefel(5, 2)
-
-"""
-# (2) Define the cost function
-X = tf.Variable(tf.placeholder(tf.float32))
-cost = tf.exp(-tf.reduce_sum(tf.square(X)))
-problem = Problem(manifold=manifold, cost=cost, arg=X, egrad=None, ehess=None, grad=None, hess=None, precon=None,
-                  verbosity=2)
-"""
+# utilities
+import plac
 
 
-# (2) Define the cost function (here using autograd.numpy)
-def cost(X): return np.sum(X)
+def main():
+    # (1) Instantiate a manifold
+    manifold = Stiefel(5, 2)
+
+    """
+    # (2) Define the cost function
+    X = tf.Variable(tf.placeholder(tf.float32))
+    cost = tf.exp(-tf.reduce_sum(tf.square(X)))
+    problem = Problem(manifold=manifold, cost=cost, arg=X, egrad=None, ehess=None, grad=None, hess=None, precon=None,
+                      verbosity=2)
+    """
+
+    # (2) Define the cost function (here using autograd.numpy)
+    def cost(X): return np.sum(X)
+
+    problem = Problem(manifold=manifold, cost=cost)
+
+    # (3) Instantiate a Pymanopt solver
+    solver = SteepestDescent()
+
+    # let Pymanopt do the rest
+    Xopt = solver.solve(problem)
+    print(Xopt)
 
 
-problem = Problem(manifold=manifold, cost=cost)
-
-# (3) Instantiate a Pymanopt solver
-solver = SteepestDescent()
-
-# let Pymanopt do the rest
-Xopt = solver.solve(problem)
-print(Xopt)
+if __name__ == '__main__':
+    try:
+        plac.call(main)
+    except KeyboardInterrupt:
+        print('\nGoodbye!')
