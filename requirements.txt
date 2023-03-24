@@ -2,4 +2,4 @@ autograd==1.1.7
 numpy==1.20.3
 plac==0.9.6
 pymanopt==0.2.1
-tensorflow==0.12.0
+tensorflow==2.11.1
